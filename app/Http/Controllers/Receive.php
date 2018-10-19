@@ -12,19 +12,41 @@ use Carbon\Carbon;
 class Receive extends Controller
 {
 
-    
-    public function __construct(){
-
-    }
 
     /**
-     * Display a listing of the resource.
+     * Return a collection of messages. 
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function lastMessages($numbersMessage){
+
+        $client = new Client();
+        $response = $client->get( config('app.apichat')['url_apichat'] . config('app.apichat')['instance_sb'] . '/messages?last=1&token=' . config('app.apichat')['token_sandbox']);
+
+        $messages = json_decode($response->getBody());
+        for ($i=0; $i < count($messages->messages); $i++)  
+            $messages->messages[$i]->time = date("Y-m-d H:i:s", $messages->messages[$i]->time);
+
+        $messageOrderByDate = array();
+
+        for ($i = count($messages->messages) - 1; $i >= 0; $i--) 
+            array_push($messageOrderByDate, $messages->messages[$i]);
+
+        if (is_numeric($numbersMessage)) {
+            
+            if ($numbersMessage < 101) {
+                $toReturn = array();
+
+                for ($i=0; $i < $numbersMessage; $i++) 
+                    array_push($toReturn, $messageOrderByDate[$i]);
+               
+                return response()->json($toReturn); 
+            }else
+                return response()->json('THE_VALUE:_' . $numbersMessage . '_IS_GREATER_THAN_100');
+
+        }else
+            return response()->json('NOT_NUMERIC_VALUE_RECEIVED');
+        
     }
 
     /**
@@ -32,9 +54,33 @@ class Receive extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function byWhatsAppNumber($whatsAppNumber, $numbersMessage)
     {
-        //
+        $client = new Client();
+        $response = $client->get( config('app.apichat')['url_apichat'] . config('app.apichat')['instance_sb'] . '/messages?last=1&token=' . config('app.apichat')['token_sandbox']);
+
+        $messages = json_decode($response->getBody());
+        for ($i=0; $i < count($messages->messages); $i++)  
+            $messages->messages[$i]->time = date("Y-m-d H:i:s", $messages->messages[$i]->time);
+
+        $messageOrderByDate = array();
+
+        for ($i = count($messages->messages) - 1; $i >= 0; $i--) 
+            array_push($messageOrderByDate, $messages->messages[$i]);
+
+        if (is_numeric($numbersMessage)) {
+            
+            if ($numbersMessage < 101) {
+                $toReturn = array();
+
+                $messageOrderByDate
+               
+                return response()->json($toReturn); 
+            }else
+                return response()->json('THE_VALUE:_' . $numbersMessage . '_IS_GREATER_THAN_100');
+
+        }else
+            return response()->json('NOT_NUMERIC_VALUE_RECEIVED');
     }
 
     /**

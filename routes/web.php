@@ -15,33 +15,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::get('/requestDemo', function () {
-
+Route::group(['prefix' => 'messages'], function(){
 	
+	Route::get('getme/{numbersMessage}', [
+			'uses'	=>	'Receive@lastMessages',
+			'as'	=>	'getme'
+		]
+	);
 
-	$client = new GuzzleHttp\Client();
-   	$response = $client->get('https://eu21.chat-api.com/instance13554/messages?last=true&token=5c3yhxh90meww8g5');
-
-   	echo "Hugo : <br/>";
-	echo date("Y-m-d H:i:s", 1534208250);
-   	
-
-
-	$messages = json_decode($response->getBody());
-	for ($i=0; $i < count($messages->messages); $i++) { 
-		$messages->messages[$i]->time = date("Y-m-d H:i:s", $messages->messages[$i]->time);
-	}
-	
-	$messageOrderByDate = array();
-
-	for ($i = count($messages->messages) - 1; $i >= 0; $i--) 
-		array_push($messageOrderByDate, $messages->messages[$i]);
-	
-
-   	echo "<pre>";
-   	print_r($messageOrderByDate);
- 	echo "</pre>";
-	
+	Route::get('getmeby/{whatsAppNumber}/{numbersMessage}', [
+			'uses'	=>	'Receive@byWhatsAppNumber',
+			'as'	=>	'getmeby'
+		]
+	);
 
 });
