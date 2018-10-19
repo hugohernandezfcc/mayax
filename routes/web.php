@@ -21,20 +21,27 @@ Route::get('/requestDemo', function () {
 	
 
 	$client = new GuzzleHttp\Client();
-   	$response = $client->get('https://eu21.chat-api.com/instance13554/messages?token=5c3yhxh90meww8g5');
+   	$response = $client->get('https://eu21.chat-api.com/instance13554/messages?last=true&token=5c3yhxh90meww8g5');
 
    	echo "Hugo : <br/>";
 	echo date("Y-m-d H:i:s", 1534208250);
- //   	echo "<pre>";
- //   	print_r(json_decode($response->getBody()));
-	// echo "</pre>";
-	// echo "<br/>";
+   	
+
 
 	$messages = json_decode($response->getBody());
 	for ($i=0; $i < count($messages->messages); $i++) { 
 		$messages->messages[$i]->time = date("Y-m-d H:i:s", $messages->messages[$i]->time);
 	}
 	
-	dd($messages->messages);
+	$messageOrderByDate = array();
+
+	for ($i = count($messages->messages) - 1; $i >= 0; $i--) 
+		array_push($messageOrderByDate, $messages->messages[$i]);
+	
+
+   	echo "<pre>";
+   	print_r($messageOrderByDate);
+ 	echo "</pre>";
+	
 
 });
