@@ -105,14 +105,13 @@ return [
     */
 
     'redis' => [
-
         'client' => 'predis',
 
         'default' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DB', 0),
+            'host' => env('REDIS_HOST', 'redis-12509.c72.eu-west-1-2.ec2.cloud.redislabs.com'),
+            'password' => env('REDIS_PASSWORD', 'Imf2X1El8EEPA4Fff4243pyGX3rYyIF2'),
+            'port' => env('REDIS_PORT', 12509),
+            'database' => env('REDIS_DB', 'redis-mayax-9036711'),
         ],
 
         'cache' => [

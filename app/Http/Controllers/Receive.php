@@ -24,8 +24,15 @@ class Receive extends Controller
         $response = $client->get( config('app.apichat')['url_apichat'] . config('app.apichat')['instance_sb'] . '/messages?last=1&token=' . config('app.apichat')['token_sandbox']);
 
         $messages = json_decode($response->getBody());
-        for ($i=0; $i < count($messages->messages); $i++)  
-            $messages->messages[$i]->time = date("Y-m-d H:i:s", $messages->messages[$i]->time);
+        for ($i=0; $i < count($messages->messages); $i++){
+
+            $messages->messages[$i]->time       = date("Y-m-d H:i:s", $messages->messages[$i]->time);
+            $messages->messages[$i]->between    =  $this->between( $messages->messages[$i]->author, $messages->messages[$i]->chatId);
+            if($messages->messages[$i]->between)
+                $messages->messages[$i]->isGroup    =  $this->isGroup( $messages->messages[$i]->between);
+        
+        }
+
 
         $messageOrderByDate = array();
 
@@ -48,6 +55,26 @@ class Receive extends Controller
             return response()->json('NOT_NUMERIC_VALUE_RECEIVED');
         
     }
+    
+    /**
+     * Method to get between who is the message
+     * @param  [type] $numberOwner   [author]
+     * @param  [type] $numerExternal [chatId]
+     * @return [type]                [Strign worked]
+     */
+    public function between($numberOwner, $numerExternal){
+        return explode('@', $numberOwner)[0] . '/' . explode('@', $numerExternal)[0];
+    }
+
+    /**
+     * Is group method to indicate if a message has been sent to a WhatsApp group.
+     * @param  [type] $numberOwner   [description]
+     * @param  [type] $numerExternal [description]
+     * @return [type]                [description]
+     */
+    public function isGroup($betweenVar){
+        return (strpos($betweenVar, '-') === false) ? false : true;
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -57,7 +84,7 @@ class Receive extends Controller
     public function byWhatsAppNumber($whatsAppNumber, $numbersMessage)
     {
         $client = new Client();
-        $response = $client->get( config('app.apichat')['url_apichat'] . config('app.apichat')['instance_sb'] . '/messages?last=1&token=' . config('app.apichat')['token_sandbox']);
+        $response = $client->get( config('app.apichat')['url_apichat'] . config('app.apichat')['instance_sb'] . '/messages?last=2&token=' . config('app.apichat')['token_sandbox']);
 
         $messages = json_decode($response->getBody());
         for ($i=0; $i < count($messages->messages); $i++)  

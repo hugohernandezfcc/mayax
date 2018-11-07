@@ -110,10 +110,10 @@ return [
 
 
     'apichat' => [
-       'token_sandbox'     =>  '5c3yhxh90meww8g5',
+       'token_sandbox'     =>  '4nfsgiszwhyxlw4e',
        'token_production'  =>  '',
-       'instance_sb'       =>  '13554',
-       'url_apichat'       =>  'https://eu21.chat-api.com/instance', 
+       'instance_sb'       =>  '15380',
+       'url_apichat'       =>  'https://eu24.chat-api.com/instance', 
     ],
 
 
